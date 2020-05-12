@@ -1,5 +1,7 @@
 package be.belfius.Van_Gompel_Jeroen_Games.domain;
 
+import com.mysql.cj.core.util.StringUtils;
+
 public class Game {
 	private int id;
 	private String game_name;
@@ -14,6 +16,8 @@ public class Game {
 	private int difficulty_id;
 	private double price;
 	private String image;
+	private Difficulty difficulty = new Difficulty();
+	private Category category = new Category();
 	
 	public String getImage() {
 		return image;
@@ -92,5 +96,31 @@ public class Game {
 	}
 	public void setPrice(double price) {
 		this.price = price;
+	}	
+	public Difficulty getDifficulty() {
+		return difficulty;
 	}
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category gategory) {
+		this.category = gategory;
+	}
+	@Override
+	public String toString() {		
+		return StringUtils.padString(game_name,40) + "\t" + StringUtils.padString(editor,40) + "\t" + StringUtils.padString(StringUtils.isNullOrEmpty(author)?"":author,40) + "\t" + StringUtils.padString(Integer.toString(year_edition),8) + "\t" + StringUtils.padString(age,20) + "\t" + StringUtils.padString(Integer.toString(min_players),12) + "\t" + StringUtils.padString(Integer.toString(max_players),12)
+		+ "\t" + StringUtils.padString(Integer.toString(category_id),12) + "\t"  + StringUtils.padString(category==null?"":category.getCategory_name(),16) + "\t" + StringUtils.padString(play_duration,20) + "\t" + StringUtils.padString(Integer.toString(difficulty_id),16) + "\t" + StringUtils.padString(difficulty.getDifficulty_name()==null?"":difficulty.getDifficulty_name(),16) + "\t" + StringUtils.padString(Double.toString(price),8) + "\t" + image ;
+		}
+
+	public static String printHeader() {
+		String head1 = StringUtils.padString("game_name",40) + "\t" + StringUtils.padString("editor",40) + "\t" + StringUtils.padString("author",40) + "\t" + StringUtils.padString("year_edition",8) + "\t" + StringUtils.padString("age",20) + "\t" + StringUtils.padString("min_players",12) + "\t" + StringUtils.padString("max_players",12)
+		+ "\t" + StringUtils.padString("category_id",12) + "\t" + StringUtils.padString("category_name",16) + "\t" + StringUtils.padString("play_duration",20) + "\t" + StringUtils.padString("difficulty_id",16) + "\t" + StringUtils.padString("difficulty_name",16) + "\t" + StringUtils.padString("price",8) + "\t" + "image" ;
+		String head2 = StringUtils.padString("_________",40) + "\t" + StringUtils.padString("______",40) + "\t" + StringUtils.padString("______",40) + "\t" + StringUtils.padString("____________",8) + "\t" + StringUtils.padString("___",20) + "\t" + StringUtils.padString("___________",12) + "\t" + StringUtils.padString("___________",12)
+		+ "\t" + StringUtils.padString("___________",12) + "\t" + StringUtils.padString("_____________",16) + "\t" + StringUtils.padString("_____________",20) + "\t" + StringUtils.padString("_____________",16) + "\t" + StringUtils.padString("_______________",16) + "\t" + StringUtils.padString("_____",8) + "\t" + "_____" ;
+		return head1 + "\n" + head2;
+	}
+	
 }

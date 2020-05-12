@@ -111,7 +111,7 @@ public class Console {
 		while (true) {
 
 			keuze = scanner.next();
-			if (keuze.length() >= 2 || keuze == "0") {
+			if (keuze.length() >= 2 || keuze.equals("0")) {
 				break;
 			} else {
 				System.out.println("Give at least 2 letters");
@@ -157,9 +157,8 @@ public class Console {
 		String keuze;
 		System.out.println("Give the first letters of the game (min 2) \ntype 0 to return to the main menu");
 		while (true) {
-
 			keuze = scanner.next();
-			if (keuze.length() >= 2 || keuze == "0") {
+			if (keuze.length() >= 2 || keuze.equals("0")) {
 				break;
 			} else {
 				System.out.println("Give at least 2 letters");

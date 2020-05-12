@@ -24,11 +24,9 @@ public class Games {
 			// register database
 			gameService = new GameService();
 		} catch (ClassNotFoundException e) {
-			console.message("Error while registering database driver \n" + e.getStackTrace().toString());
+			e.printStackTrace();
 		}
-
 		showHoofdMenu();
-
 	}
 
 	public static void showHoofdMenu() {
@@ -41,7 +39,7 @@ public class Games {
 			showCategoryMenu();
 			break;
 		case 2:
-
+			showGameMenu();
 			break;
 		case 3:
 
@@ -62,7 +60,6 @@ public class Games {
 			console.message("this value is not valid. \n\n");
 			showHoofdMenu();
 		}
-
 	}
 
 	private static void showCategoryMenu() {
@@ -100,26 +97,37 @@ public class Games {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			console.askHoofdmenu("Database error: \n" + e.getStackTrace().toString());
+			console.askHoofdmenu();
 
 		}
 	}
 
 	private static void showCategoryByName() {
 		try {
-			String beginLetters = console.askCategoryName();
-			List<Category> categoryList = categoryService.getCategoryByName(beginLetters);
-			System.out.println("ID \t CATEGORY_NAME");
-			System.out.println("__ \t _____________ \n");
-			for (Category category : categoryList) {
-				System.out.println(category.getId() + "\t" + category.getCategory_name());
+			while (true) {
+				String beginLetters = console.askCategoryName();
+				if (beginLetters.equals("0")) {
+					showHoofdMenu();
+				} else {
+					List<Category> categoryList = categoryService.getCategoryByName(beginLetters);
+					if (!categoryList.isEmpty()) {
+						System.out.println("ID \t CATEGORY_NAME");
+						System.out.println("__ \t _____________ \n");
+						for (Category category : categoryList) {
+							System.out.println(category.getId() + "\t" + category.getCategory_name());
+
+						}
+						break;
+					} else {
+						console.message("no categories found");
+					}
+				}
 			}
 			console.askHoofdmenu();
 		} catch (SQLException e) {
-			console.askHoofdmenu("Database error: \n" + e.getStackTrace().toString());
-
+			e.printStackTrace();
+			console.askHoofdmenu();
 		}
-
 	}
 
 	private static void showCategoryList() {
@@ -132,12 +140,13 @@ public class Games {
 			}
 			console.askHoofdmenu();
 		} catch (SQLException e) {
-			console.askHoofdmenu("Database error: \n" + e.getStackTrace().toString());
+			e.printStackTrace();
+			console.askHoofdmenu();
 		}
 	}
 
 	private static void showGameMenu() {
-		int keuze = console.askCategoryToShow();
+		int keuze = console.askGameToShow();
 		switch (keuze) {
 		case 0:
 			showHoofdMenu();
@@ -164,41 +173,94 @@ public class Games {
 			if (keuze == 0) {
 				showHoofdMenu();
 			} else {
-				Game game = gameService.getGameByIndex(keuze);
+				System.out.println(Game.printHeader());
+				Game game = gameService.getGameByIndex(keuze, categoryService,difficultyService);
 				System.out.println(game.toString());
 				console.askHoofdmenu();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			console.askHoofdmenu("Database error: \n" + e.getStackTrace().toString());
-
+			console.askHoofdmenu();
 		}
 	}
 
 	private static void showGameByName() {
 		try {
-			String beginLetters = console.askGameName();
-			List<Game> gameList = gameService.getGameByName(beginLetters);
-			for (Game game : gameList) {
-				System.out.println(game.toString());
+			while (true) {
+				String beginLetters = console.askGameName();
+				if (beginLetters.equals("0")) {
+					showHoofdMenu();
+				} else {
+					List<Game> gameList = gameService.getGameByName(beginLetters,categoryService,difficultyService);
+					if (!gameList.isEmpty()) {
+						System.out.println(Game.printHeader());
+						for (Game game : gameList) {						
+							System.out.println(game.toString());
+						}
+						break;
+					} else {
+						console.message("No games found");
+					}
+				}
 			}
 			console.askHoofdmenu();
 		} catch (SQLException e) {
-			console.askHoofdmenu("Database error: \n" + e.getStackTrace().toString());
-
+			e.printStackTrace();
+			console.askHoofdmenu();
 		}
-
 	}
 
 	private static void showGameList() {
 		try {
-			List<Game> gameList = gameService.getGameList();
-			for (Game game : gameList) {
+			List<Game> gameList = gameService.getGameList(categoryService,difficultyService);
+			System.out.println(Game.printHeader());
+			for (Game game : gameList) {				
 				System.out.println(game.toString());
 			}
 			console.askHoofdmenu();
 		} catch (SQLException e) {
-			console.askHoofdmenu("Database error: \n" + e.getStackTrace().toString());
+			e.printStackTrace();
+			console.askHoofdmenu();
 		}
+	}
+
+	public static Console getConsole() {
+		return console;
+	}
+
+	public static void setConsole(Console console) {
+		Games.console = console;
+	}
+
+	public static GameService getGameService() {
+		return gameService;
+	}
+
+	public static void setGameService(GameService gameService) {
+		Games.gameService = gameService;
+	}
+
+	public static BorrowerService getBorrowerService() {
+		return borrowerService;
+	}
+
+	public static void setBorrowerService(BorrowerService borrowerService) {
+		Games.borrowerService = borrowerService;
+	}
+
+	public static DifficultyService getDifficultyService() {
+		return difficultyService;
+	}
+
+	public static void setDifficultyService(DifficultyService difficultyService) {
+		Games.difficultyService = difficultyService;
+	}
+
+	public static CategoryService getCategoryService() {
+		return categoryService;
+	}
+
+	public static void setCategoryService(CategoryService categoryService) {
+		Games.categoryService = categoryService;
 	}
 }

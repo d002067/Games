@@ -46,7 +46,7 @@ public class CategoryService {
 			//return  (List<Category>) categoryList.stream().filter(category -> category.getCategory_name().startsWith(beginLetters));
 			List<Category> filteredCategory = new ArrayList<Category>();
 			for (Category category : categoryList) {
-				if(category.getCategory_name().startsWith(beginLetters)){
+				if(category.getCategory_name().toLowerCase().startsWith(beginLetters.toLowerCase())){
 					filteredCategory.add(category);
 				}
 			}

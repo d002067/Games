@@ -50,7 +50,7 @@ public class GameRepository {
 				game.setMax_players(resultSet.getInt("max_players"));
 				game.setCategory_id(resultSet.getInt("category_id"));
 				game.setPlay_duration(resultSet.getString("play_duration"));
-				game.setDifficulty_id(resultSet.getInt("dificulty_id"));
+				game.setDifficulty_id(resultSet.getInt("difficulty_id"));
 				game.setPrice(resultSet.getDouble("price"));
 				game.setImage(resultSet.getString("image"));
 				gameList.add(game);
@@ -77,7 +77,7 @@ public class GameRepository {
 				game.setMax_players(resultSet.getInt("max_players"));
 				game.setCategory_id(resultSet.getInt("category_id"));
 				game.setPlay_duration(resultSet.getString("play_duration"));
-				game.setDifficulty_id(resultSet.getInt("dificulty_id"));
+				game.setDifficulty_id(resultSet.getInt("difficulty_id"));
 				game.setPrice(resultSet.getDouble("price"));
 				game.setImage(resultSet.getString("image"));
 			}
@@ -106,7 +106,7 @@ public class GameRepository {
 				game.setMax_players(resultSet.getInt("max_players"));
 				game.setCategory_id(resultSet.getInt("category_id"));
 				game.setPlay_duration(resultSet.getString("play_duration"));
-				game.setDifficulty_id(resultSet.getInt("dificulty_id"));
+				game.setDifficulty_id(resultSet.getInt("difficulty_id"));
 				game.setPrice(resultSet.getDouble("price"));
 				game.setImage(resultSet.getString("image"));
 				gameList.add(game);
