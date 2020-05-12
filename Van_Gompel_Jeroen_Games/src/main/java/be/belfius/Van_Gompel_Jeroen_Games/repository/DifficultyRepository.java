@@ -17,15 +17,18 @@ public class DifficultyRepository {
 		public int getMaxDifficultyId() throws SQLException {
 			try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
 					"root", "");) {
+				int i;
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("select MAX(id) from difficulty");
 				//statement.close();
 				if (resultSet.next()) {
-					return resultSet.getInt(1);
+					i =  resultSet.getInt(1);
 				} else {
-					return 0;
+					i = 0;
 				}
-
+				resultSet.close();
+				statement.close();
+				return i;
 			}
 		}
 
@@ -43,6 +46,7 @@ public class DifficultyRepository {
 					difficulty.setDifficulty_name(resultSet.getString("difficulty_name"));
 					difficultyList.add(difficulty);
 				}
+				resultSet.close();
 				statement.close();
 				return difficultyList;
 			}
@@ -58,6 +62,7 @@ public class DifficultyRepository {
 					difficulty.setId(resultSet.getInt("id"));
 					difficulty.setDifficulty_name(resultSet.getString("difficulty_name"));
 				}
+				resultSet.close();
 				statement.close();
 				return difficulty;
 			}
@@ -77,6 +82,7 @@ public class DifficultyRepository {
 					difficulty.setDifficulty_name(resultSet.getString("difficulty_name"));
 					difficultyList.add(difficulty);
 				}
+				resultSet.close();
 				statement.close();
 				return difficultyList;
 			}

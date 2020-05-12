@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
 import be.belfius.Van_Gompel_Jeroen_Games.repository.CategoryRepository;
@@ -15,8 +16,10 @@ public class CategoryService {
 
 	public int getMaxCategoryId() throws SQLException {
 		if (categoryList.isEmpty()) {
+			System.out.println("MaxCategoryId From Database");
 			return categoryRepository.getMaxCategoryId();
 		} else {
+			System.out.println("MaxCategoryId From Object");
 			Category category = Collections.max(categoryList, Comparator.comparing(s -> s.getId()));
 			return category.getId();
 		}
@@ -24,15 +27,20 @@ public class CategoryService {
 
 	public List getCategoryList() throws SQLException {
 		if (categoryList.isEmpty()) {
+			System.out.println("CategoryList From Database");
 			categoryList = categoryRepository.getCategoryList();
-		}
+		}else {
+			System.out.println("CategoryList From Object");
+		}		
 		return categoryList;
 	}
 
 	public Category getCategoryByIndex(int catIndex) throws SQLException {
 		if (categoryList.isEmpty()) {
+			System.out.println("CategoryByIndex From Database");
 			return categoryRepository.getCategoryByIndex(catIndex);
 		} else {
+			System.out.println("CategoryByIndex From Object");
 			return (Category) categoryList.stream().filter(category -> category.getId() == catIndex).findFirst()
 					.orElse(null);
 		}
@@ -41,16 +49,18 @@ public class CategoryService {
 	
 	public List<Category> getCategoryByName(String beginLetters) throws SQLException{
 		if (categoryList.isEmpty()) {
+			System.out.println("CategoryByName From Database");
 			return categoryRepository.getCategoryByName(beginLetters);
 		} else {
-			//return  (List<Category>) categoryList.stream().filter(category -> category.getCategory_name().startsWith(beginLetters));
-			List<Category> filteredCategory = new ArrayList<Category>();
+			System.out.println("CategoryByName From Object");
+			return  (List<Category>) categoryList.stream().filter(category -> category.getCategory_name().toLowerCase().startsWith(beginLetters.toLowerCase())).collect(Collectors.toList());
+			/*List<Category> filteredCategory = new ArrayList<Category>();
 			for (Category category : categoryList) {
 				if(category.getCategory_name().toLowerCase().startsWith(beginLetters.toLowerCase())){
 					filteredCategory.add(category);
 				}
 			}
-			return filteredCategory;
+			return filteredCategory;*/
 		}
 	}
 }

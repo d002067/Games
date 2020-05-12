@@ -15,8 +15,10 @@ public class DifficultyService {
 
 	public int getMaxDifficultyId() throws SQLException {
 		if (difficultyList.isEmpty()) {
+			System.out.println("MaxDifficultyId From Database");
 			return difficultyRepository.getMaxDifficultyId();
 		} else {
+			System.out.println("MaxDifficultyId From Object");
 			Difficulty difficulty = Collections.max(difficultyList, Comparator.comparing(s -> s.getId()));
 			return difficulty.getId();
 		}
@@ -24,15 +26,20 @@ public class DifficultyService {
 
 	public List getList() throws SQLException {
 		if (difficultyList.isEmpty()) {
+			System.out.println("DifficultyList From Database");
 			difficultyList = difficultyRepository.getDifficultyList();
+		}else {
+			System.out.println("MaxDifficultyId From Object");
 		}
 		return difficultyList;
 	}
 
 	public Difficulty getDifficultyByIndex(int catIndex) throws SQLException {
 		if (difficultyList.isEmpty()) {
+			System.out.println("MaxDifficultyByIndex From Database");
 			return difficultyRepository.getDifficultyByIndex(catIndex);
 		} else {
+			System.out.println("MaxDifficultyByIndex From Object");
 			return (Difficulty) difficultyList.stream().filter(difficulty -> difficulty.getId() == catIndex).findFirst()
 					.orElse(null);
 		}
@@ -41,8 +48,10 @@ public class DifficultyService {
 	
 	public List<Difficulty> getDifficultyByName(String beginLetters) throws SQLException{
 		if (difficultyList.isEmpty()) {
+			System.out.println("MaxDifficultyByName From Database");
 			return difficultyRepository.getDifficultyByName(beginLetters);
 		} else {
+			System.out.println("MaxDifficultyByName From Object");
 			List<Difficulty> filteredDifficulty = new ArrayList<Difficulty>();
 			for (Difficulty difficulty : difficultyList) {
 				if(difficulty.getDifficulty_name().toLowerCase().startsWith(beginLetters.toLowerCase())){

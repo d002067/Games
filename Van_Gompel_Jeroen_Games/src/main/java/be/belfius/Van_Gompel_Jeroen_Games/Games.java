@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import be.belfius.Van_Gompel_Jeroen_Games.domain.Borrower;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Console;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Game;
@@ -42,7 +43,7 @@ public class Games {
 			showGameMenu();
 			break;
 		case 3:
-
+			showBorrowerMenu();
 			break;
 		case 4:
 
@@ -158,7 +159,9 @@ public class Games {
 			showGameByName();
 			break;
 		case 3:
-			showGameList();
+		case 4:
+		case 5:
+			showGameList(keuze - 3);
 			break;
 		default:
 			console.message("this value is not valid. \n\n");
@@ -173,9 +176,9 @@ public class Games {
 			if (keuze == 0) {
 				showHoofdMenu();
 			} else {
-				System.out.println(Game.printHeader());
+				System.out.println(Game.printHeader(0));
 				Game game = gameService.getGameByIndex(keuze, categoryService,difficultyService);
-				System.out.println(game.toString());
+				System.out.println(game.toString(0));
 				console.askHoofdmenu();
 			}
 		} catch (SQLException e) {
@@ -193,9 +196,9 @@ public class Games {
 				} else {
 					List<Game> gameList = gameService.getGameByName(beginLetters,categoryService,difficultyService);
 					if (!gameList.isEmpty()) {
-						System.out.println(Game.printHeader());
+						System.out.println(Game.printHeader(0));
 						for (Game game : gameList) {						
-							System.out.println(game.toString());
+							System.out.println(game.toString(0));
 						}
 						break;
 					} else {
@@ -210,12 +213,70 @@ public class Games {
 		}
 	}
 
-	private static void showGameList() {
+	private static void showGameList(int keuze) {
 		try {
 			List<Game> gameList = gameService.getGameList(categoryService,difficultyService);
-			System.out.println(Game.printHeader());
+			System.out.println(Game.printHeader(keuze));
 			for (Game game : gameList) {				
-				System.out.println(game.toString());
+				System.out.println(game.toString(keuze));
+			}
+			console.askHoofdmenu();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			console.askHoofdmenu();
+		}
+	}
+	
+	private static void showBorrowerMenu() {
+		int keuze = console.askBorrowerToShow();
+		switch (keuze) {
+		case 0:
+			showHoofdMenu();
+			break;
+		case 1:
+			showBorrowerByName();
+			break;
+		case 2:
+			showBorrowerList();
+			break;
+		default:
+			console.message("this value is not valid. \n\n");
+			showHoofdMenu();
+		}
+	}
+	
+	private static void showBorrowerByName() {
+		try {
+			while (true) {
+				String beginLetters = console.askBorrowerName();
+				if (beginLetters.equals("0")) {
+					showHoofdMenu();
+				} else {
+					List<Borrower> borrowerList = borrowerService.getBorrowerByName(beginLetters);
+					if (!borrowerList.isEmpty()) {
+						System.out.println(Borrower.printHeader());
+						for (Borrower borrower : borrowerList) {
+							System.out.println(borrower.toString());
+						}
+						break;
+					} else {
+						console.message("no borrowers found");
+					}
+				}
+			}
+			console.askHoofdmenu();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			console.askHoofdmenu();
+		}
+	}
+
+	private static void showBorrowerList() {
+		try {
+			List<Borrower> borrowerList = borrowerService.getBorrowerList();
+			System.out.println(Borrower.printHeader());
+			for (Borrower borrower : borrowerList) {
+				System.out.println(borrower.toString());
 			}
 			console.askHoofdmenu();
 		} catch (SQLException e) {

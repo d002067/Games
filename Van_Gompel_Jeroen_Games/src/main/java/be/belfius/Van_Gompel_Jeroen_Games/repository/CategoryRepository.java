@@ -17,15 +17,18 @@ public class CategoryRepository {
 	public int getMaxCategoryId() throws SQLException {
 		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
 				"root", "");) {
+			int i;
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery("select MAX(id) from category");
 			//statement.close();
 			if (resultSet.next()) {
-				return resultSet.getInt(1);
+				i = resultSet.getInt(1);
 			} else {
-				return 0;
+				i =  0;
 			}
-
+			resultSet.close();
+			statement.close();
+			return i;
 		}
 	}
 
@@ -43,6 +46,7 @@ public class CategoryRepository {
 				category.setCategory_name(resultSet.getString("category_name"));
 				categoryList.add(category);
 			}
+			resultSet.close();
 			statement.close();
 			return categoryList;
 		}
@@ -58,6 +62,7 @@ public class CategoryRepository {
 				category.setId(resultSet.getInt("id"));
 				category.setCategory_name(resultSet.getString("category_name"));
 			}
+			resultSet.close();
 			statement.close();
 			return category;
 		}
@@ -77,6 +82,7 @@ public class CategoryRepository {
 				category.setCategory_name(resultSet.getString("category_name"));
 				categoryList.add(category);
 			}
+			resultSet.close();
 			statement.close();
 			return categoryList;
 		}

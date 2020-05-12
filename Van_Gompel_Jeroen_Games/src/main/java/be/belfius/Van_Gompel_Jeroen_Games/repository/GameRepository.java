@@ -20,13 +20,17 @@ public class GameRepository {
 	public int getMaxGameId() throws SQLException {
 		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
 				"root", "");) {
+			int i;
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery("select MAX(id) from game");
 			if (resultSet.next()) {
-				return resultSet.getInt(1);
+				i =  resultSet.getInt(1);
 			} else {
-				return 0;
+				i = 0;
 			}
+			resultSet.close();
+			statement.close();
+			return i;
 		}
 	}
 
@@ -55,6 +59,7 @@ public class GameRepository {
 				game.setImage(resultSet.getString("image"));
 				gameList.add(game);
 			}
+			resultSet.close();
 			statement.close();
 			return gameList;
 		}
@@ -81,6 +86,7 @@ public class GameRepository {
 				game.setPrice(resultSet.getDouble("price"));
 				game.setImage(resultSet.getString("image"));
 			}
+			resultSet.close();
 			statement.close();
 			return game;
 		}
@@ -111,6 +117,7 @@ public class GameRepository {
 				game.setImage(resultSet.getString("image"));
 				gameList.add(game);
 			}
+			resultSet.close();
 			statement.close();
 			return gameList;
 		}

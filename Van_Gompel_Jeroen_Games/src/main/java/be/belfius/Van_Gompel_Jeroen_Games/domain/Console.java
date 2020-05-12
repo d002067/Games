@@ -12,8 +12,8 @@ public class Console {
 		String keuze = "";
 		while (true) {
 			System.out.println(
-					"0: close \n" + "1. Show game category \n" + "2: Show game \n"
-							+ "3.  \n" + "4.  \n" + "5.   \n"
+					"0: close \n" + "1. Game category \n" + "2. Game \n"
+							+ "3. Borrower \n" + "4.  \n" + "5.   \n"
 							+ "6.  \n" + "7. ");
 
 			keuze = scanner.next();
@@ -43,7 +43,7 @@ public class Console {
 		String keuze;
 		int intKeuze;
 		while (true) {
-			System.out.println("\n" + "Kies 0 om terug naar het hoofdmenu te gaan: ");
+			System.out.println("\n" + "Type 0 to return to the main menu: ");
 			keuze = scanner.next();
 			if (isNumeric(keuze)) {
 				intKeuze = Integer.parseInt(keuze);
@@ -60,7 +60,7 @@ public class Console {
 		int intKeuze;
 		System.out.println(message + "\n\n");
 		while (true) {
-			System.out.println("\n" + "Kies 0 om terug naar het hoofdmenu te gaan: ");
+			System.out.println("\n" + "Type 0 to return to the main menu: ");
 			keuze = scanner.next();
 			if (isNumeric(keuze)) {
 				intKeuze = Integer.parseInt(keuze);
@@ -80,7 +80,7 @@ public class Console {
 			if ("0123".indexOf(keuze) != -1 && keuze.length() == 1) {
 				break;
 			} else {
-				System.out.println("Maak een juiste keuze \n");
+				System.out.println("invalid input \n");
 			}
 		}
 		return Integer.parseInt(keuze);
@@ -123,9 +123,9 @@ public class Console {
 	public int askGameToShow() {
 		String keuze = "";
 		while (true) {
-			System.out.println("0. Main menu \n1. Game by index \n2. Game by Name \n3. Game list");
+			System.out.println("0. Main menu \n1. Game by index \n2. Game by Name \n3. Game list (All information) \n4. Game list (Editor information) \n5. Game list (Player informatiion)");
 			keuze = scanner.next();
-			if ("0123".indexOf(keuze) != -1 && keuze.length() == 1) {
+			if ("012345".indexOf(keuze) != -1 && keuze.length() == 1) {
 				break;
 			} else {
 				System.out.println("Maak een juiste keuze \n");
@@ -156,6 +156,34 @@ public class Console {
 	public String askGameName() {
 		String keuze;
 		System.out.println("Give the first letters of the game (min 2) \ntype 0 to return to the main menu");
+		while (true) {
+			keuze = scanner.next();
+			if (keuze.length() >= 2 || keuze.equals("0")) {
+				break;
+			} else {
+				System.out.println("Give at least 2 letters");
+			}
+		}
+		return keuze;
+	}
+	
+	public int askBorrowerToShow() {
+		String keuze = "";
+		while (true) {
+			System.out.println("0. Main menu \n1. Borrower by Name \n2. Borrower list");
+			keuze = scanner.next();
+			if ("012".indexOf(keuze) != -1 && keuze.length() == 1) {
+				break;
+			} else {
+				System.out.println("invalid input \n");
+			}
+		}
+		return Integer.parseInt(keuze);
+	}
+	
+	public String askBorrowerName() {
+		String keuze;
+		System.out.println("Give the first letters of the borrower name (min 2)  \ntype 0 to return to the main menu");
 		while (true) {
 			keuze = scanner.next();
 			if (keuze.length() >= 2 || keuze.equals("0")) {

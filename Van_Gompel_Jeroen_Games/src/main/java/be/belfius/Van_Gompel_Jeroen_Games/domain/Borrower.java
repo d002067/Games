@@ -1,5 +1,7 @@
 package be.belfius.Van_Gompel_Jeroen_Games.domain;
 
+import com.mysql.cj.core.util.StringUtils;
+
 public class Borrower {
 	private int id;
 	private String borrower_name;
@@ -64,5 +66,38 @@ public class Borrower {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public String toString() {
+		return StringUtils.padString(borrower_name, 30) 
+				+ StringUtils.padString(street,20) 
+				+ StringUtils.padString(house_number, 13) 
+				+ StringUtils.padString(bus_number==null?"":bus_number, 4) 
+				+ StringUtils.padString(Integer.toString(postcode),9)
+				+ StringUtils.padString(city,30)
+				+ StringUtils.padString(telephone==null?"":telephone,15)
+				+ StringUtils.padString(email==null?"":email,30);
+	}
+	public static String printHeader() {
+		String head1 = "";
+		String head2 = "";
+		
+		head1 = StringUtils.padString("borrower_name", 30) 
+				+ StringUtils.padString("street",20) 
+				+ StringUtils.padString("house_number", 13) 
+				+ StringUtils.padString("bus", 4) 
+				+ StringUtils.padString("postcode",9)
+				+ StringUtils.padString("city",30)
+				+ StringUtils.padString("telephone",15)
+				+ StringUtils.padString("email",30);
+		head2 = StringUtils.padString("_____________", 30) 
+				+ StringUtils.padString("______",20) 
+				+ StringUtils.padString("____________", 13) 
+				+ StringUtils.padString("___", 4) 
+				+ StringUtils.padString("________",9)
+				+ StringUtils.padString("____",30)
+				+ StringUtils.padString("_________",15)
+				+ StringUtils.padString("_____",30);
+		return head1 + "\n" + head2;
 	}
 }
