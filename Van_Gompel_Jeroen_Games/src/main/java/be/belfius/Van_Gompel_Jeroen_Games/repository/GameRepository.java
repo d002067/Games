@@ -92,7 +92,7 @@ public class GameRepository {
 		}
 	}
 	
-	public List<Game> getGameByName(String beginLetters) throws SQLException{
+	public List<Game> getGameList(String beginLetters) throws SQLException{
 		List<Game> gameList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
 				"root", "");) {
@@ -122,6 +122,38 @@ public class GameRepository {
 			return gameList;
 		}
 	}
+	
+	public List<Game> getGameByPart(String letters) throws SQLException{
+		List<Game> gameList = new ArrayList<>();
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
+				"root", "");) {
+			
+			PreparedStatement statement = connection.prepareStatement("select * from game where lower(game_name) like ?");
+			statement.setString(1,"%" + letters + "%".toLowerCase());
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				Game game = new Game();
+				game.setId(resultSet.getInt("id"));
+				game.setGame_name(resultSet.getString("game_name"));
+				game.setEditor(resultSet.getString("editor"));
+				game.setAuthor(resultSet.getString("author"));
+				game.setYear_edition(resultSet.getInt("year_edition"));
+				game.setAge(resultSet.getString("age"));
+				game.setMin_players(resultSet.getInt("min_players"));
+				game.setMax_players(resultSet.getInt("max_players"));
+				game.setCategory_id(resultSet.getInt("category_id"));
+				game.setPlay_duration(resultSet.getString("play_duration"));
+				game.setDifficulty_id(resultSet.getInt("difficulty_id"));
+				game.setPrice(resultSet.getDouble("price"));
+				game.setImage(resultSet.getString("image"));
+				gameList.add(game);
+			}
+			resultSet.close();
+			statement.close();
+			return gameList;
+		}
+	}
+	
 }
 
 

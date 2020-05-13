@@ -65,13 +65,40 @@ public class BorrowerRepository {
 		}
 	}
 	
-	public List<Borrower> getBorrowerByName(String beginLetters) throws SQLException{
+	public List<Borrower> getBorrowerList(String beginLetters) throws SQLException{
 		List<Borrower> borrowerList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
 				"root", "");) {
 			
 			PreparedStatement statement = connection.prepareStatement("select * from borrower where lower(borrower_name) like ?");
 			statement.setString(1,beginLetters + "%".toLowerCase());
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				Borrower borrower = new Borrower();
+				borrower.setId(resultSet.getInt("id"));
+				borrower.setBorrower_name(resultSet.getString("borrower_name"));
+				borrower.setStreet(resultSet.getString("street"));
+				borrower.setHouse_number(resultSet.getString("house_number"));
+				borrower.setBus_number(resultSet.getString("bus_number"));
+				borrower.setPostcode(resultSet.getInt("postcode"));
+				borrower.setCity(resultSet.getString("city"));
+				borrower.setEmail(resultSet.getString("email"));
+				borrower.setTelephone(resultSet.getString("telephone"));
+				borrowerList.add(borrower);
+			}
+			resultSet.close();
+			statement.close();
+			return borrowerList;
+		}
+	}
+	
+	public List<Borrower> getBorrowerByPart(String letters) throws SQLException{
+		List<Borrower> borrowerList = new ArrayList<>();
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
+				"root", "");) {
+			
+			PreparedStatement statement = connection.prepareStatement("select * from borrower where lower(borrower_name) like ?");
+			statement.setString(1,"%" + letters + "%".toLowerCase());
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				Borrower borrower = new Borrower();

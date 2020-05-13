@@ -1,9 +1,15 @@
 package be.belfius.Van_Gompel_Jeroen_Games;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.mysql.cj.core.util.StringUtils;
+
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
+import be.belfius.Van_Gompel_Jeroen_Games.domain.Borrow;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Borrower;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Console;
@@ -12,6 +18,7 @@ import be.belfius.Van_Gompel_Jeroen_Games.services.BorrowerService;
 import be.belfius.Van_Gompel_Jeroen_Games.services.CategoryService;
 import be.belfius.Van_Gompel_Jeroen_Games.services.DifficultyService;
 import be.belfius.Van_Gompel_Jeroen_Games.services.GameService;
+import be.belfius.Van_Gompel_Jeroen_Games.services.BorrowService;
 
 public class Games {
 	private static Console console = new Console();
@@ -19,6 +26,7 @@ public class Games {
 	private static BorrowerService borrowerService = new BorrowerService();
 	private static DifficultyService difficultyService = new DifficultyService();
 	private static CategoryService categoryService = new CategoryService();
+	private static BorrowService borrowService = new BorrowService();
 
 	public static void main(String[] args) {
 		try {
@@ -109,6 +117,7 @@ public class Games {
 				String beginLetters = console.askCategoryName();
 				if (beginLetters.equals("0")) {
 					showHoofdMenu();
+					break;
 				} else {
 					List<Category> categoryList = categoryService.getCategoryByName(beginLetters);
 					if (!categoryList.isEmpty()) {
@@ -163,6 +172,12 @@ public class Games {
 		case 5:
 			showGameList(keuze - 3);
 			break;
+		case 6:
+			showGameListForSelect();
+			break;
+		case 7:
+			showBorrowedGames();
+			break;
 		default:
 			console.message("this value is not valid. \n\n");
 			showHoofdMenu();
@@ -193,8 +208,9 @@ public class Games {
 				String beginLetters = console.askGameName();
 				if (beginLetters.equals("0")) {
 					showHoofdMenu();
+					break;
 				} else {
-					List<Game> gameList = gameService.getGameByName(beginLetters,categoryService,difficultyService);
+					List<Game> gameList = gameService.getGameByName(beginLetters,categoryService,difficultyService, borrowService);
 					if (!gameList.isEmpty()) {
 						System.out.println(Game.printHeader(0));
 						for (Game game : gameList) {						
@@ -215,10 +231,79 @@ public class Games {
 
 	private static void showGameList(int keuze) {
 		try {
-			List<Game> gameList = gameService.getGameList(categoryService,difficultyService);
+			List<Game> gameList = gameService.getGameList(categoryService,difficultyService, borrowService);
 			System.out.println(Game.printHeader(keuze));
 			for (Game game : gameList) {				
 				System.out.println(game.toString(keuze));
+			}
+			console.askHoofdmenu();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			console.askHoofdmenu();
+		}
+	}
+	
+	private static void showBorrowedGames() {
+		try {
+			List<Game> gameList = gameService.getGameList(categoryService,difficultyService, borrowService);
+			System.out.println(Game.printHeader(0));
+			for (Game game : gameList.stream().filter(game -> !game.getBorrowList().isEmpty()).collect(Collectors.toList())) {
+				System.out.println(game.toString(0));
+				if(!game.borrowList.isEmpty()) {
+					for (Borrow borrow : game.borrowList) {
+						Borrower borrower = borrowerService.getBorrowerByIndex(borrow.getBorrower_id());
+						System.out.println("\t- Borrower: " + borrower.toString());
+						System.out.println("\t- Borrow date: " + (borrow.getBorrow_date()==null?"":new SimpleDateFormat("dd/MM/yyyy").format(borrow.getBorrow_date())));
+						System.out.println("\t- Return date: " + (borrow.getReturn_date()==null?"":new SimpleDateFormat("dd/MM/yyyy").format(borrow.getReturn_date())));
+					}
+				}
+			}
+			//gameList.stream().filter(game -> !game.getBorrowList().isEmpty()).collect(Collectors.toList());
+			console.askHoofdmenu();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			console.askHoofdmenu();
+		}
+	}
+	
+	private static void showGameListForSelect() {
+		try {
+			List<Game> gameList = gameService.getGameList(categoryService,difficultyService, borrowService);			
+			int i = 0;
+			for (Game game : gameList) {				
+				if (i%4==0) {
+					System.out.println(StringUtils.padString(game.borrowList.isEmpty()?game.getGame_name():game.getGame_name().toUpperCase(), 40));
+				}else {
+					System.out.print(StringUtils.padString(game.borrowList.isEmpty()?game.getGame_name():game.getGame_name().toUpperCase(), 40));
+				}
+				i++;
+			}			
+			while (true) {
+				System.out.println();
+				String letters = console.askSelectGame();
+				if (letters.equals("0")) {
+					showHoofdMenu();
+					break;
+				} else {
+					List<Game> gameList2 = gameService.getSelectedGame(letters,categoryService,difficultyService, borrowService);
+					if (!gameList2.isEmpty()) {
+						System.out.println(Game.printHeader(0));
+						for (Game game : gameList2) {						
+							System.out.println(game.toString(0));
+							if(!game.borrowList.isEmpty()) {
+								for (Borrow borrow : game.borrowList) {
+									Borrower borrower = borrowerService.getBorrowerByIndex(borrow.getBorrower_id());
+									System.out.println("\t- Borrower: " + borrower.toString());
+									System.out.println("\t- Borrow date: " + (borrow.getBorrow_date()==null?"":new SimpleDateFormat("dd/MM/yyyy").format(borrow.getBorrow_date())));
+									System.out.println("\t- Return date: " + (borrow.getReturn_date()==null?"":new SimpleDateFormat("dd/MM/yyyy").format(borrow.getReturn_date())));
+								}
+							}
+						}
+						//break;
+					} else {
+						console.message("No games found");
+					}
+				}
 			}
 			console.askHoofdmenu();
 		} catch (SQLException e) {
@@ -252,7 +337,7 @@ public class Games {
 				if (beginLetters.equals("0")) {
 					showHoofdMenu();
 				} else {
-					List<Borrower> borrowerList = borrowerService.getBorrowerByName(beginLetters);
+					List<Borrower> borrowerList = borrowerService.getBorrowerByName(beginLetters, borrowService);
 					if (!borrowerList.isEmpty()) {
 						System.out.println(Borrower.printHeader());
 						for (Borrower borrower : borrowerList) {
@@ -273,12 +358,37 @@ public class Games {
 
 	private static void showBorrowerList() {
 		try {
-			List<Borrower> borrowerList = borrowerService.getBorrowerList();
+			List<Borrower> borrowerList = borrowerService.getBorrowerList( borrowService);
 			System.out.println(Borrower.printHeader());
 			for (Borrower borrower : borrowerList) {
 				System.out.println(borrower.toString());
 			}
-			console.askHoofdmenu();
+			while (true) {
+				System.out.println();
+				String letters = console.askSelectBorrower();
+				if (letters.equals("0")) {
+					showHoofdMenu();
+					break;
+				} else {
+					List<Borrower> borrowerList2 = borrowerService.getSelectedBorrower(letters, borrowService);
+					if (!borrowerList2.isEmpty()) {
+						for (Borrower borrower : borrowerList2) {						
+							System.out.println(borrower.getBorrower_name() + "\t" + borrower.getStreet() + "\t" + borrower.getHouse_number() + "\t" + borrower.getCity());
+							if(!borrower.borrowList.isEmpty()) {
+								for (Borrow borrow : borrower.borrowList) {
+									Game game = gameService.getGameByIndex(borrow.getGame_id(), categoryService, difficultyService);
+									System.out.println("\t* - Game: " + game.getGame_name() +"\t" + game.getEditor() + game.getAuthor());
+									System.out.println("\t  - Borrow date: " + (borrow.getBorrow_date()==null?"":new SimpleDateFormat("dd/MM/yyyy").format(borrow.getBorrow_date())));
+									System.out.println("\t  - Return date: " + (borrow.getReturn_date()==null?"":new SimpleDateFormat("dd/MM/yyyy").format(borrow.getReturn_date())));
+								}
+							}
+						}
+						//break;
+					} else {
+						console.message("No games found");
+					}
+				}
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			console.askHoofdmenu();

@@ -1,5 +1,8 @@
 package be.belfius.Van_Gompel_Jeroen_Games.domain;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import com.mysql.cj.core.util.StringUtils;
 
 public class Game {
@@ -16,8 +19,10 @@ public class Game {
 	private int difficulty_id;
 	private double price;
 	private String image;
-	private Difficulty difficulty = new Difficulty();
-	private Category category = new Category();
+	private Difficulty difficulty;
+	private Category category;
+	public List<Borrow> borrowList;
+	
 
 	public String getImage() {
 		return image;
@@ -137,6 +142,14 @@ public class Game {
 
 	public void setCategory(Category gategory) {
 		this.category = gategory;
+	}
+
+	public List<Borrow> getBorrowList() {
+		return borrowList;
+	}
+
+	public void setBorrowerList(List<Borrow> borrowList) {
+		this.borrowList = borrowList;
 	}
 
 	public String toString(int i) {

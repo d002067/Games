@@ -1,5 +1,7 @@
 package be.belfius.Van_Gompel_Jeroen_Games.domain;
 
+import java.util.List;
+
 import com.mysql.cj.core.util.StringUtils;
 
 public class Borrower {
@@ -12,6 +14,7 @@ public class Borrower {
 	private String city;
 	private String telephone;
 	private String email;
+	public List<Borrow> borrowList;
 	
 	public int getId() {
 		return id;
@@ -68,6 +71,12 @@ public class Borrower {
 		this.email = email;
 	}
 	
+	public List<Borrow> getBorrowList() {
+		return borrowList;
+	}
+	public void setBorrowList(List<Borrow> borrowList) {
+		this.borrowList = borrowList;
+	}
 	public String toString() {
 		return StringUtils.padString(borrower_name, 30) 
 				+ StringUtils.padString(street,20) 

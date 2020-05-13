@@ -10,52 +10,85 @@ import java.util.stream.Collectors;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Borrower;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Game;
+import be.belfius.Van_Gompel_Jeroen_Games.domain.ListState;
 import be.belfius.Van_Gompel_Jeroen_Games.repository.BorrowerRepository;
-
 
 public class BorrowerService {
 	private BorrowerRepository borrowerRepository = new BorrowerRepository();
 	public List<Borrower> borrowerList = new ArrayList<>();
-	
+	private ListState listState = ListState.EMPTY;
 
-	public List getBorrowerList() throws SQLException {
-		if (borrowerList.isEmpty()) {
-			System.out.println("BorrowerList From Database");
+	public List getBorrowerList(BorrowService borrowService) throws SQLException {
+		if (listState == ListState.EMPTY) {
+			printInfo("BorrowerList From Database");
+			listState = ListState.FILLED;
 			borrowerList = borrowerRepository.getBorrowerList();
-		}else {
-			System.out.println("BorrowerList From Object");
-		}		
-		return borrowerList.stream()
-				.sorted(Comparator.comparing(Borrower::getBorrower_name))
+			for (Borrower borrower : borrowerList) {
+				borrower.borrowList = borrowService.getBorrowListForBorrower(borrower.getId());
+			}
+		} else {
+			printInfo("BorrowerList From Object");
+		}
+		return borrowerList.stream().sorted(Comparator.comparing(Borrower::getBorrower_name))
 				.collect(Collectors.toList());
 	}
 
 	public Borrower getBorrowerByIndex(int catIndex) throws SQLException {
-		if (borrowerList.isEmpty()) {
-			System.out.println("BorrowerByIndex From Database");
+		if (listState == ListState.EMPTY) {
+			printInfo("BorrowerByIndex From Database");
 			return borrowerRepository.getBorrowerByIndex(catIndex);
 		} else {
-			System.out.println("BorrowerByIndex From Object");
+			printInfo("BorrowerByIndex From Object");
 			return (Borrower) borrowerList.stream().filter(borrower -> borrower.getId() == catIndex).findFirst()
 					.orElse(null);
 		}
 	}
-	
-	
-	public List<Borrower> getBorrowerByName(String beginLetters) throws SQLException{
-		if (borrowerList.isEmpty()) {
-			System.out.println("BorrowerByName From Database");
-			return borrowerRepository.getBorrowerByName(beginLetters);
-		} else {
-			System.out.println("BorrowerByName From Object");
-			return  (List<Borrower>) borrowerList.stream().filter(borrower -> borrower.getBorrower_name().toLowerCase().startsWith(beginLetters.toLowerCase())).collect(Collectors.toList());
-			/*List<Borrower> filteredBorrower = new ArrayList<Borrower>();
+
+	public List<Borrower> getBorrowerByName(String beginLetters, BorrowService borrowService) throws SQLException {
+		if (listState == ListState.EMPTY) {
+			printInfo("BorrowerByName From Database");
+			borrowerList = borrowerRepository.getBorrowerList(beginLetters);
 			for (Borrower borrower : borrowerList) {
-				if(borrower.getBorrower_name().toLowerCase().startsWith(beginLetters.toLowerCase())){
-					filteredBorrower.add(borrower);
-				}
+				borrower.borrowList = borrowService.getBorrowListForBorrower(borrower.getId());
 			}
-			return filteredBorrower;*/
+			return borrowerList;
+		} else {
+			printInfo("BorrowerByName From Object");
+			return (List<Borrower>) borrowerList.stream().filter(
+					borrower -> borrower.getBorrower_name().toLowerCase().startsWith(beginLetters.toLowerCase()))
+					.collect(Collectors.toList());
+			/*
+			 * List<Borrower> filteredBorrower = new ArrayList<Borrower>(); for (Borrower
+			 * borrower : borrowerList) {
+			 * if(borrower.getBorrower_name().toLowerCase().startsWith(beginLetters.
+			 * toLowerCase())){ filteredBorrower.add(borrower); } } return filteredBorrower;
+			 */
 		}
+	}
+
+	public List<Borrower> getSelectedBorrower(String letters, BorrowService borrowService) throws SQLException {
+		if (listState == ListState.EMPTY) {
+			printInfo("BorrowerByName From Database");
+			borrowerList = borrowerRepository.getBorrowerByPart(letters);
+			for (Borrower borrower : borrowerList) {
+				borrower.borrowList = borrowService.getBorrowListForBorrower(borrower.getId());
+			}
+			return borrowerList;
+		} else {
+			printInfo("BorrowerByName From Object");
+			return (List<Borrower>) borrowerList.stream()
+					.filter(borrower -> borrower.getBorrower_name().toLowerCase().contains(letters.toLowerCase()))
+					.collect(Collectors.toList());
+			/*
+			 * List<Borrower> filteredBorrower = new ArrayList<Borrower>(); for (Borrower
+			 * borrower : borrowerList) {
+			 * if(borrower.getBorrower_name().toLowerCase().startsWith(beginLetters.
+			 * toLowerCase())){ filteredBorrower.add(borrower); } } return filteredBorrower;
+			 */
+		}
+	}
+
+	private void printInfo(String info) {
+		// System.out.println(info);
 	}
 }

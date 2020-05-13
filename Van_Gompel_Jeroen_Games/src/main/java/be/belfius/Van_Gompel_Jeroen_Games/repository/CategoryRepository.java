@@ -68,7 +68,7 @@ public class CategoryRepository {
 		}
 	}
 	
-	public List<Category> getCategoryByName(String beginLetters) throws SQLException{
+	public List<Category> getCategoryList(String beginLetters) throws SQLException{
 		List<Category> categoryList = new ArrayList<>();
 		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/games?useSSL=false",
 				"root", "");) {

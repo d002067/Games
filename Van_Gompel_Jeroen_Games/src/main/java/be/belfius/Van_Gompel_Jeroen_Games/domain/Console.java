@@ -123,9 +123,9 @@ public class Console {
 	public int askGameToShow() {
 		String keuze = "";
 		while (true) {
-			System.out.println("0. Main menu \n1. Game by index \n2. Game by Name \n3. Game list (All information) \n4. Game list (Editor information) \n5. Game list (Player informatiion)");
+			System.out.println("0. Main menu \n1. Game by index \n2. Game by Name \n3. Game list (All information) \n4. Game list (Editor information) \n5. Game list (Player information) \n6. Select game \n7. Borrowed Games");
 			keuze = scanner.next();
-			if ("012345".indexOf(keuze) != -1 && keuze.length() == 1) {
+			if ("01234567".indexOf(keuze) != -1 && keuze.length() == 1) {
 				break;
 			} else {
 				System.out.println("Maak een juiste keuze \n");
@@ -166,6 +166,19 @@ public class Console {
 		}
 		return keuze;
 	}
+	public String askSelectGame() {
+		String keuze;
+		System.out.println("Give a part of the game Name (min 2 letters). Borrowed games are shown in uppercase. \ntype 0 to return to the main menu");
+		while (true) {
+			keuze = scanner.next();
+			if (keuze.length() >= 2 || keuze.equals("0")) {
+				break;
+			} else {
+				System.out.println("Give at least 2 letters");
+			}
+		}
+		return keuze;
+	}
 	
 	public int askBorrowerToShow() {
 		String keuze = "";
@@ -194,4 +207,19 @@ public class Console {
 		}
 		return keuze;
 	}
+	
+	public String askSelectBorrower() {
+		String keuze;
+		System.out.println("Give a part of borrower Name (min 2 letters). \ntype 0 to return to the main menu");
+		while (true) {
+			keuze = scanner.next();
+			if (keuze.length() >= 2 || keuze.equals("0")) {
+				break;
+			} else {
+				System.out.println("Give at least 2 letters");
+			}
+		}
+		return keuze;
+	}
+	
 }
