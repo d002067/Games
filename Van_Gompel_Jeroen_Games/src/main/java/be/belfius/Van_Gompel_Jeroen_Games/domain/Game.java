@@ -22,7 +22,6 @@ public class Game {
 	private Difficulty difficulty;
 	private Category category;
 	public List<Borrow> borrowList;
-	
 
 	public String getImage() {
 		return image;
@@ -184,6 +183,22 @@ public class Game {
 					+ StringUtils.padString(
 							difficulty.getDifficulty_name() == null ? "" : difficulty.getDifficulty_name(), 16)
 					+ "\t" + StringUtils.padString(Double.toString(price), 8);
+			break;
+
+		case 3:
+			result = StringUtils.padString(borrowList.isEmpty() ? game_name : game_name.toUpperCase(), 40) + "\t"
+					+ StringUtils.padString(editor, 40) + "\t"
+					+ StringUtils.padString(StringUtils.isNullOrEmpty(author) ? "" : author, 40) + "\t"
+					+ StringUtils.padString(Integer.toString(year_edition), 8) + "\t" + StringUtils.padString(age, 20)
+					+ "\t" + StringUtils.padString(Integer.toString(min_players), 12) + "\t"
+					+ StringUtils.padString(Integer.toString(max_players), 12) + "\t"
+					+ StringUtils.padString(Integer.toString(category_id), 12) + "\t"
+					+ StringUtils.padString(category == null ? "" : category.getCategory_name(), 16) + "\t"
+					+ StringUtils.padString(play_duration, 20) + "\t"
+					+ StringUtils.padString(Integer.toString(difficulty_id), 16) + "\t"
+					+ StringUtils.padString(
+							difficulty.getDifficulty_name() == null ? "" : difficulty.getDifficulty_name(), 16)
+					+ "\t" + StringUtils.padString(Double.toString(price), 8) + "\t" + image;
 			break;
 		}
 		return result;

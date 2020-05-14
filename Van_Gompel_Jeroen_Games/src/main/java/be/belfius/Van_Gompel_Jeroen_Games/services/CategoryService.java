@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
-import be.belfius.Van_Gompel_Jeroen_Games.domain.ListState;
+import be.belfius.Van_Gompel_Jeroen_Games.domain.Enum_ListState;
 import be.belfius.Van_Gompel_Jeroen_Games.repository.CategoryRepository;
 
 public class CategoryService {
 	private CategoryRepository categoryRepository = new CategoryRepository();
 	public List<Category> categoryList = new ArrayList<>();
-	private ListState listState = ListState.EMPTY;
+	private Enum_ListState listState = Enum_ListState.EMPTY;
 	
 	public int getMaxCategoryId() throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("MaxCategoryId From Database");
 			return categoryRepository.getMaxCategoryId();
 		} else {
@@ -28,10 +28,10 @@ public class CategoryService {
 	}
 
 	public List getCategoryList() throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("CategoryList From Database");
 			categoryList = categoryRepository.getCategoryList();
-			listState = ListState.FILLED;
+			listState = Enum_ListState.FILLED;
 		}else {
 			printInfo("CategoryList From Object");
 		}		
@@ -39,7 +39,7 @@ public class CategoryService {
 	}
 
 	public Category getCategoryByIndex(int catIndex) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("CategoryByIndex From Database");
 			return categoryRepository.getCategoryByIndex(catIndex);
 		} else {
@@ -51,7 +51,7 @@ public class CategoryService {
 	
 	
 	public List<Category> getCategoryByName(String beginLetters) throws SQLException{
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("CategoryByName From Database");
 			return categoryRepository.getCategoryList(beginLetters);
 		} else {

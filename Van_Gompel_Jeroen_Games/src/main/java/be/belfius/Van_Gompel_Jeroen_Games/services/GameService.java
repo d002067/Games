@@ -9,14 +9,14 @@ import java.util.stream.Collectors;
 
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Game;
-import be.belfius.Van_Gompel_Jeroen_Games.domain.ListState;
+import be.belfius.Van_Gompel_Jeroen_Games.domain.Enum_ListState;
 import be.belfius.Van_Gompel_Jeroen_Games.repository.GameRepository;
 
 
 public class GameService {
 	private GameRepository gameRepository = new GameRepository();
 	public List<Game> gameList = new ArrayList<>();
-	private ListState listState = ListState.EMPTY;
+	private Enum_ListState listState = Enum_ListState.EMPTY;
 	public GameService() throws ClassNotFoundException {
 
 	}
@@ -31,7 +31,7 @@ public class GameService {
 	}
 
 	public List getGameList(CategoryService categoryService, DifficultyService difficultyService, BorrowService borrowService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("GameList From Database");
 			gameList = gameRepository.getGameList();
 			for (Game game : gameList) {
@@ -39,7 +39,7 @@ public class GameService {
 				game.setCategory(categoryService.getCategoryByIndex(game.getCategory_id()));
 				game.borrowList = borrowService.getBorrowListForGame(game.getId());				
 			}
-			listState = ListState.FILLED;
+			listState = Enum_ListState.FILLED;
 		}else {
 			printInfo("GameList From Object");
 		}
@@ -49,7 +49,7 @@ public class GameService {
 	}
 
 	public Game getGameByIndex(int gameIndex, CategoryService categoryService, DifficultyService difficultyService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("GameByIndex From Database");
 			Game game = gameRepository.getGameByIndex(gameIndex);
 			game.setDifficulty(difficultyService.getDifficultyByIndex(game.getDifficulty_id()));
@@ -62,7 +62,7 @@ public class GameService {
 	}
 
 	public List<Game> getGameByName(String beginLetters, CategoryService categoryService, DifficultyService difficultyService, BorrowService borrowService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("GameByName From Database");
 			List<Game> myGameList =  gameRepository.getGameList(beginLetters);
 			for (Game game : myGameList) {
@@ -70,10 +70,10 @@ public class GameService {
 				game.setCategory(categoryService.getCategoryByIndex(game.getCategory_id()));
 				game.borrowList = borrowService.getBorrowListForGame(game.getId());	
 			}
-			return myGameList;
+			return myGameList.stream().sorted(Comparator.comparing(Game::getGame_name)).collect(Collectors.toList());
 		} else {
 			printInfo("GameByName From Object");
-			return (List<Game>) gameList.stream().filter(game -> game.getGame_name().toLowerCase().startsWith(beginLetters.toLowerCase())).collect(Collectors.toList());
+			return (List<Game>) gameList.stream().filter(game -> game.getGame_name().toLowerCase().startsWith(beginLetters.toLowerCase())).sorted(Comparator.comparing(Game::getGame_name)).collect(Collectors.toList());
 			/*List<Game> filteredGame = new ArrayList<Game>();
 			for (Game game : gameList) {
 				if (game.getGame_name().toLowerCase().startsWith(beginLetters.toLowerCase())) {
@@ -84,7 +84,7 @@ public class GameService {
 		}
 	}
 	public List<Game> getSelectedGame(String letters, CategoryService categoryService, DifficultyService difficultyService, BorrowService borrowService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("GameByName From Database");
 			List<Game> myGameList =  gameRepository.getGameByPart(letters);
 			for (Game game : myGameList) {
@@ -92,10 +92,10 @@ public class GameService {
 				game.setCategory(categoryService.getCategoryByIndex(game.getCategory_id()));
 				game.borrowList = borrowService.getBorrowListForGame(game.getId());	
 			}
-			return myGameList;
+			return myGameList.stream().sorted(Comparator.comparing(Game::getGame_name)).collect(Collectors.toList());
 		} else {
 			printInfo("GameByName From Object");
-			return (List<Game>) gameList.stream().filter(game -> game.getGame_name().toLowerCase().contains(letters.toLowerCase())).collect(Collectors.toList());
+			return (List<Game>) gameList.stream().filter(game -> game.getGame_name().toLowerCase().contains(letters.toLowerCase())).sorted(Comparator.comparing(Game::getGame_name)).collect(Collectors.toList());
 			/*List<Game> filteredGame = new ArrayList<Game>();
 			for (Game game : gameList) {
 				if (game.getGame_name().toLowerCase().startsWith(beginLetters.toLowerCase())) {

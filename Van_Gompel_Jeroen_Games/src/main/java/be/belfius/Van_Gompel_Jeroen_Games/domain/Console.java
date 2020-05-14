@@ -11,10 +11,7 @@ public class Console {
 	public int showMenu() {
 		String keuze = "";
 		while (true) {
-			System.out.println(
-					"0: close \n" + "1. Game category \n" + "2. Game \n"
-							+ "3. Borrower \n" + "4.  \n" + "5.   \n"
-							+ "6.  \n" + "7. ");
+			System.out.println("0: close \n" + "1. Game category \n" + "2. Game \n" + "3. Borrower \n" + "4. Report ");
 
 			keuze = scanner.next();
 			if ("01234567".indexOf(keuze) != -1 && keuze.length() == 1) {
@@ -119,16 +116,17 @@ public class Console {
 		}
 		return keuze;
 	}
-	
+
 	public int askGameToShow() {
 		String keuze = "";
 		while (true) {
-			System.out.println("0. Main menu \n1. Game by index \n2. Game by Name \n3. Game list (All information) \n4. Game list (Editor information) \n5. Game list (Player information) \n6. Select game \n7. Borrowed Games");
+			System.out.println(
+					"0. Main menu \n1. Game by index \n2. Game by Name \n3. Game list (All information) \n4. Game list (Editor information) \n5. Game list (Player information) \n6. Select game \n7. Borrowed Games \n8. Borrowed Games (expanded) \n9. Select minimum difficulty");
 			keuze = scanner.next();
-			if ("01234567".indexOf(keuze) != -1 && keuze.length() == 1) {
+			if ("0123456789".indexOf(keuze) != -1 && keuze.length() == 1) {
 				break;
 			} else {
-				System.out.println("Maak een juiste keuze \n");
+				System.out.println("this value is not valid \n");
 			}
 		}
 		return Integer.parseInt(keuze);
@@ -138,8 +136,7 @@ public class Console {
 		String keuze = "";
 		int intKeuze;
 		while (true) {
-			System.out
-					.println("Give the index of the game (1 - " + maxId + ") \ntype 0 to return to the main menu");
+			System.out.println("Give the index of the game (1 - " + maxId + ") \ntype 0 to return to the main menu");
 			keuze = scanner.next();
 			if (isNumeric(keuze)) {
 				intKeuze = Integer.parseInt(keuze);
@@ -152,7 +149,52 @@ public class Console {
 		}
 		return Integer.parseInt(keuze);
 	}
-	
+
+	public Enum_Difficulty askDifficulty(Enum_Difficulty currentDifficulty) {
+
+		String keuze;
+		System.out.println("Your current difficulty = " + currentDifficulty.getInfo()[1]);
+		System.out.println("Chose a new minimuf difficulty. Gamelists will only show games for this difficulty");
+
+		System.out.println();
+
+		Enum_Difficulty newDifficulty = currentDifficulty;
+		String menu = "";
+		for (Enum_Difficulty difficulty : Enum_Difficulty.values()) {
+			menu += difficulty.value[2];
+		}
+		System.out.println(menu);
+		while (true) {
+
+			keuze = scanner.next();
+			if ("12345".indexOf(keuze) != -1 && keuze.length() == 1) {
+				switch (keuze) {
+				case "1":
+					newDifficulty = Enum_Difficulty.VERY_EASY;
+					break;
+				case "2":
+					newDifficulty = Enum_Difficulty.EASY;
+					break;
+				case "3":
+					newDifficulty = Enum_Difficulty.AVERAGE;
+					break;
+				case "4":
+					newDifficulty = Enum_Difficulty.DIFFICULT;
+					break;
+				case "5":
+					newDifficulty = Enum_Difficulty.VERY_DIFFICULT;
+					break;
+				default:
+					break;
+				}
+				break;
+			} else {
+				System.out.println("this value is not valid \n");
+			}
+		}
+		return newDifficulty;
+	}
+
 	public String askGameName() {
 		String keuze;
 		System.out.println("Give the first letters of the game (min 2) \ntype 0 to return to the main menu");
@@ -166,9 +208,11 @@ public class Console {
 		}
 		return keuze;
 	}
+
 	public String askSelectGame() {
 		String keuze;
-		System.out.println("Give a part of the game Name (min 2 letters). Borrowed games are shown in uppercase. \ntype 0 to return to the main menu");
+		System.out.println(
+				"Give a part of the game Name (min 2 letters). Borrowed games are shown in uppercase. \ntype 0 to return to the main menu");
 		while (true) {
 			keuze = scanner.next();
 			if (keuze.length() >= 2 || keuze.equals("0")) {
@@ -179,7 +223,7 @@ public class Console {
 		}
 		return keuze;
 	}
-	
+
 	public int askBorrowerToShow() {
 		String keuze = "";
 		while (true) {
@@ -193,7 +237,7 @@ public class Console {
 		}
 		return Integer.parseInt(keuze);
 	}
-	
+
 	public String askBorrowerName() {
 		String keuze;
 		System.out.println("Give the first letters of the borrower name (min 2)  \ntype 0 to return to the main menu");
@@ -207,7 +251,7 @@ public class Console {
 		}
 		return keuze;
 	}
-	
+
 	public String askSelectBorrower() {
 		String keuze;
 		System.out.println("Give a part of borrower Name (min 2 letters). \ntype 0 to return to the main menu");
@@ -221,5 +265,5 @@ public class Console {
 		}
 		return keuze;
 	}
-	
+
 }

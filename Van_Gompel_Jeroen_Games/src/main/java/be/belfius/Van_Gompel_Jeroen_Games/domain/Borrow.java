@@ -1,14 +1,17 @@
 package be.belfius.Van_Gompel_Jeroen_Games.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.mysql.cj.core.util.StringUtils;
 
 public class Borrow {
 	int game_id;
 	int borrower_id;
 	Date borrow_date;
 	Date return_date;
-	Game game;
-	Borrower borrower;
+	String game_name;
+	String borrower_name;
 	public int getGame_id() {
 		return game_id;
 	}
@@ -33,18 +36,35 @@ public class Borrow {
 	public void setReturn_date(Date return_date) {
 		this.return_date = return_date;
 	}
-	public Game getGame() {
-		return game;
+	public String getGame_name() {
+		return game_name;
 	}
-	public void setGame(Game game) {
-		this.game = game;
+	public void setGame_name(String game_name) {
+		this.game_name = game_name;
 	}
-	public Borrower getBorrower() {
-		return borrower;
+	public String getBorrower_name() {
+		return borrower_name;
 	}
-	public void setBorrower(Borrower borrower) {
-		this.borrower = borrower;
+	public void setBorrower_name(String borrower_name) {
+		this.borrower_name = borrower_name;
 	}
 	
-	
+	public String toString() {
+				return StringUtils.padString(game_name, 40) + "\t" + StringUtils.padString(borrower_name, 40) + "\t"
+				+ StringUtils.padString(borrow_date == null ? ""
+						:new SimpleDateFormat("dd/MM/yyyy").format(borrow_date), 11) + "\t"
+				+ StringUtils.padString(return_date == null ? ""
+						:new SimpleDateFormat("dd/MM/yyyy").format(return_date), 11);
+	}
+	public static String printHeader() {
+		return StringUtils.padString("game_name", 40) + "\t" + StringUtils.padString("borrower_name", 40) + "\t"
+				+ StringUtils.padString("borrow_date", 11) + "\t"
+				+ StringUtils.padString("return_date", 11)
+				+ "\n"
+				+ StringUtils.padString("_________", 40) + "\t" + StringUtils.padString("_____________", 40) + "\t"
+				+ StringUtils.padString("___________", 11) + "\t"
+				+ StringUtils.padString("___________", 11)
+				;
+}
+
 }

@@ -10,18 +10,18 @@ import java.util.stream.Collectors;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Borrower;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Category;
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Game;
-import be.belfius.Van_Gompel_Jeroen_Games.domain.ListState;
+import be.belfius.Van_Gompel_Jeroen_Games.domain.Enum_ListState;
 import be.belfius.Van_Gompel_Jeroen_Games.repository.BorrowerRepository;
 
 public class BorrowerService {
 	private BorrowerRepository borrowerRepository = new BorrowerRepository();
 	public List<Borrower> borrowerList = new ArrayList<>();
-	private ListState listState = ListState.EMPTY;
+	private Enum_ListState listState = Enum_ListState.EMPTY;
 
 	public List getBorrowerList(BorrowService borrowService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("BorrowerList From Database");
-			listState = ListState.FILLED;
+			listState = Enum_ListState.FILLED;
 			borrowerList = borrowerRepository.getBorrowerList();
 			for (Borrower borrower : borrowerList) {
 				borrower.borrowList = borrowService.getBorrowListForBorrower(borrower.getId());
@@ -34,7 +34,7 @@ public class BorrowerService {
 	}
 
 	public Borrower getBorrowerByIndex(int catIndex) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("BorrowerByIndex From Database");
 			return borrowerRepository.getBorrowerByIndex(catIndex);
 		} else {
@@ -45,7 +45,7 @@ public class BorrowerService {
 	}
 
 	public List<Borrower> getBorrowerByName(String beginLetters, BorrowService borrowService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("BorrowerByName From Database");
 			borrowerList = borrowerRepository.getBorrowerList(beginLetters);
 			for (Borrower borrower : borrowerList) {
@@ -67,7 +67,7 @@ public class BorrowerService {
 	}
 
 	public List<Borrower> getSelectedBorrower(String letters, BorrowService borrowService) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("BorrowerByName From Database");
 			borrowerList = borrowerRepository.getBorrowerByPart(letters);
 			for (Borrower borrower : borrowerList) {
@@ -78,6 +78,7 @@ public class BorrowerService {
 			printInfo("BorrowerByName From Object");
 			return (List<Borrower>) borrowerList.stream()
 					.filter(borrower -> borrower.getBorrower_name().toLowerCase().contains(letters.toLowerCase()))
+					.sorted(Comparator.comparing(Borrower::getBorrower_name))
 					.collect(Collectors.toList());
 			/*
 			 * List<Borrower> filteredBorrower = new ArrayList<Borrower>(); for (Borrower

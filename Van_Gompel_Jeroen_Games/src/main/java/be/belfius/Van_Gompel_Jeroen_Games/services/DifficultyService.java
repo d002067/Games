@@ -7,16 +7,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import be.belfius.Van_Gompel_Jeroen_Games.domain.Difficulty;
-import be.belfius.Van_Gompel_Jeroen_Games.domain.ListState;
+import be.belfius.Van_Gompel_Jeroen_Games.domain.Enum_ListState;
 import be.belfius.Van_Gompel_Jeroen_Games.repository.DifficultyRepository;
 
 public class DifficultyService {
 	private DifficultyRepository difficultyRepository = new DifficultyRepository();
 	public List<Difficulty> difficultyList = new ArrayList<>();
-	private ListState listState = ListState.EMPTY;
+	private Enum_ListState listState = Enum_ListState.EMPTY;
 	
 	public int getMaxDifficultyId() throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("MaxDifficultyId From Database");
 			return difficultyRepository.getMaxDifficultyId();
 		} else {
@@ -27,10 +27,10 @@ public class DifficultyService {
 	}
 
 	public List getList() throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("DifficultyList From Database");
 			difficultyList = difficultyRepository.getDifficultyList();
-			listState = ListState.FILLED;
+			listState = Enum_ListState.FILLED;
 		}else {
 			printInfo("MaxDifficultyId From Object");
 		}
@@ -38,7 +38,7 @@ public class DifficultyService {
 	}
 
 	public Difficulty getDifficultyByIndex(int catIndex) throws SQLException {
-		if (listState == ListState.EMPTY) {
+		if (listState == Enum_ListState.EMPTY) {
 			printInfo("MaxDifficultyByIndex From Database");
 			return difficultyRepository.getDifficultyByIndex(catIndex);
 		} else {
