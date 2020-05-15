@@ -6,7 +6,12 @@ import java.util.stream.Collectors;
 
 import com.mysql.cj.core.util.StringUtils;
 
+import java.awt.Desktop;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
@@ -30,10 +35,9 @@ public class Games {
 	private static CategoryService categoryService = new CategoryService();
 	private static BorrowService borrowService = new BorrowService();
 	private static Enum_Difficulty enumDifficulty = Enum_Difficulty.VERY_EASY;
-	
-	
+
 	public static void main(String[] args) {
-		System.out.println("Jeroen Van Gompel --- Van_Gompel_Jeroen_Games" );
+		System.out.println("Jeroen Van Gompel --- Van_Gompel_Jeroen_Games");
 		System.out.println();
 		try {
 			// register database
@@ -60,7 +64,7 @@ public class Games {
 			showBorrowerMenu();
 			break;
 		case 4:
-
+			showReports();
 			break;
 		default:
 			console.message("this value is not valid. \n\n");
@@ -82,6 +86,9 @@ public class Games {
 			break;
 		case 3:
 			showCategoryList();
+			break;
+		case 4:
+			showReports();
 			break;
 		default:
 			console.message("this value is not valid. \n\n");
@@ -236,7 +243,10 @@ public class Games {
 	private static void showGameList(int output) {
 		try {
 			List<Game> gameList = gameService.getGameList(categoryService, difficultyService, borrowService);
-			List<Game> gameList2 = gameList.stream().filter(game -> enumDifficulty.value[0].toString().indexOf(Integer.toString(game.getDifficulty_id()).trim()) != -1).collect(Collectors.toList());
+			List<Game> gameList2 = gameList.stream()
+					.filter(game -> enumDifficulty.value[0].toString()
+							.indexOf(Integer.toString(game.getDifficulty_id()).trim()) != -1)
+					.collect(Collectors.toList());
 
 			System.out.println(Game.printHeader(output));
 			for (Game game : gameList2) {
@@ -249,13 +259,14 @@ public class Games {
 		}
 	}
 
-	
 	private static void showGameList(Enum_Difficulty thisEnumDifficulty) {
 		try {
 			enumDifficulty = console.askDifficulty(thisEnumDifficulty);
 			List<Game> gameList = gameService.getGameList(categoryService, difficultyService, borrowService);
 			List<Game> gameListF = gameList.stream()
-					.filter(game -> enumDifficulty.value[0].toString().indexOf(Integer.toString(game.getDifficulty_id()).trim()) != -1).collect(Collectors.toList());
+					.filter(game -> enumDifficulty.value[0].toString()
+							.indexOf(Integer.toString(game.getDifficulty_id()).trim()) != -1)
+					.collect(Collectors.toList());
 
 			System.out.println(Game.printHeader(0));
 			for (Game game : gameListF) {
@@ -267,10 +278,11 @@ public class Games {
 			console.askHoofdmenu();
 		}
 	}
-	
+
 	private static void showBorrowedGames() {
 		try {
-			List<Borrow> borrowList = borrowService.getBorrowList(gameService, borrowerService, categoryService,difficultyService);
+			List<Borrow> borrowList = borrowService.getBorrowList(gameService, borrowerService, categoryService,
+					difficultyService);
 			System.out.println(Borrow.printHeader());
 			for (Borrow borrow : borrowList) {
 				System.out.println(borrow.toString());
@@ -286,7 +298,8 @@ public class Games {
 		try {
 			List<Game> gameList = gameService.getGameList(categoryService, difficultyService, borrowService);
 			System.out.println(Game.printHeader(output));
-			for (Game game : gameList.stream().filter(game -> !game.getBorrowList().isEmpty()).collect(Collectors.toList())) {
+			for (Game game : gameList.stream().filter(game -> !game.getBorrowList().isEmpty())
+					.collect(Collectors.toList())) {
 				System.out.println(game.toString(output));
 				if (!game.borrowList.isEmpty()) {
 					for (Borrow borrow : game.borrowList) {
@@ -444,6 +457,99 @@ public class Games {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			console.askHoofdmenu();
+		}
+	}
+
+	private static void showReports() {
+		int keuze = console.askReports();
+		switch (keuze) {
+		case 0:
+			showHoofdMenu();
+			break;
+		case 1:
+			makeGameReport();
+			break;
+		case 2:
+			makeBorrowReport();
+			break;
+		default:
+			console.message("this value is not valid. \n\n");
+			showHoofdMenu();
+		}
+	}
+
+	private static void makeGameReport() {
+		try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File("Y://Games.csv"))))) {
+			printWriter.print("");
+			try {
+				List<Game> gameList = gameService.getGameList(categoryService, difficultyService, borrowService);
+				printWriter.println(
+						"Game_name" 
+						+ ";" + "Editor"
+						+ ";" + "Author" 
+						+ ";" + "Year_edition" 
+						+ ";" + "Age"
+						+ ";" + "Min_players" 
+						+ ";" + "Max_players" 
+						+ ";" + "Category_id"
+						+ ";" + "Category_name" 
+						+ ";" + "Play_duration" 
+						+ ";" + "Difficulty_id" 
+						+ ";" + "Difficulty_name"
+						+ ";" + "Price" 
+						+ ";" + "Image");
+
+				gameList.stream()
+						
+						.forEach(value -> printWriter.println(value.getGame_name().toString() + ";" + value.getEditor()
+						+ ";" + value.getAuthor() 
+						+ ";" + value.getYear_edition() 
+						+ ";" + value.getAge() 
+						+ ";" + value.getMin_players() 
+						+ ";" + value.getMax_players() 
+						+ ";" + value.getCategory_id()
+						+ ";" + (value.getCategory() == null? "": value.getCategory().getCategory_name()) 
+						+ ";" + value.getPlay_duration() 
+						+ ";" + value.getDifficulty_id() 
+						+ ";" + (value.getDifficulty() == null ? "": value.getDifficulty().getDifficulty_name())
+						+ ";"  + value.getPrice() + 
+						";" + value.getImage()));
+				printWriter.close();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+			Desktop.getDesktop().open(new File("Y://Games.csv"));
+			console.askHoofdmenu();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void makeBorrowReport() {
+		try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File("Y://Borrows.csv"))))) {
+			printWriter.print("");
+			try {
+				List<Borrow> borrowList = borrowService.getBorrowList(gameService, borrowerService, categoryService,
+						difficultyService);
+				printWriter.println(
+						"Game_name" 
+						+ ";" + "Borrower_name"
+						+ ";" + "Borrow_date" 
+						+ ";" + "Return_date" );
+
+				borrowList.stream()						
+						.forEach(value -> printWriter.println(value.getGame_name().toString() + ";" + value.getBorrower_name()
+						+ ";" + new SimpleDateFormat("dd/MM/yyyy").format(value.getBorrow_date()) 
+						+ ";" + new SimpleDateFormat("dd/MM/yyyy").format(value.getReturn_date()))) ;
+
+				printWriter.close();
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+			Desktop.getDesktop().open(new File("Y://Games.csv"));
+			console.askHoofdmenu();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -23,6 +23,7 @@ public class Game {
 	private Category category;
 	public List<Borrow> borrowList;
 
+
 	public String getImage() {
 		return image;
 	}

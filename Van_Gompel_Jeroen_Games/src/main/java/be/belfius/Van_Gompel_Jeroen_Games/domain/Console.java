@@ -154,7 +154,7 @@ public class Console {
 
 		String keuze;
 		System.out.println("Your current difficulty = " + currentDifficulty.getInfo()[1]);
-		System.out.println("Chose a new minimuf difficulty. Gamelists will only show games for this difficulty");
+		System.out.println("Chose a new minimum difficulty. Gamelists will only show games for at least this difficulty (Except Borrow lists)");
 
 		System.out.println();
 
@@ -265,5 +265,18 @@ public class Console {
 		}
 		return keuze;
 	}
-
+	public int askReports() {
+		String keuze = "";
+		while (true) {
+			System.out.println(
+					"0. Main menu \n1. Game report \n2. Borrow report ");
+			keuze = scanner.next();
+			if ("012".indexOf(keuze) != -1 && keuze.length() == 1) {
+				break;
+			} else {
+				System.out.println("this value is not valid \n");
+			}
+		}
+		return Integer.parseInt(keuze);
+	}
 }
